@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pc-waker</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <h1>💤 pc-waker</h1>
+    <div id="banner" class="banner" hidden></div>
+    {{if .Hosts}}
+    <ul>
+      {{range $i, $h := .Hosts}}
+      <li>
+        <span
+          ><span class="name">{{$h.Name}}</span><br /><span class="mac"
+            >{{$h.MAC}}</span
+          ></span
+        >
+        <form method="post" action="/wake">
+          <input type="hidden" name="host" value="{{$i}}" />
+          <button type="submit">Wake</button>
+        </form>
+      </li>
+      {{end}}
+    </ul>
+    {{else}}
+    <p class="empty">
+      No hosts configured. Add some to your config.yaml and restart.
+    </p>
+    {{end}}
+    <script>
+      const banner = document.getElementById("banner");
+      function showBanner(msg, isError) {
+        banner.textContent = msg;
+        banner.className = "banner " + (isError ? "err" : "ok");
+        banner.hidden = false;
+      }
+      for (const form of document.querySelectorAll("form")) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = form.querySelector("button");
+          btn.disabled = true;
+          try {
+            const res = await fetch(form.action, {
+              method: "POST",
+              body: new FormData(form),
+            });
+            const data = await res.json();
+            showBanner(data.message, data.error);
+          } catch (err) {
+            showBanner("Request failed: " + err, true);
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
