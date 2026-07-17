@@ -1,0 +1,11 @@
+services:
+  pc-waker:
+    build: .
+    # host networking is REQUIRED so the UDP broadcast reaches the LAN.
+    # (Docker's default bridge network does not forward broadcasts.)
+    network_mode: host
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro
+    environment:
+      - PORT=8080
+    restart: unless-stopped

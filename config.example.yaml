@@ -1,0 +1,16 @@
+# pc-waker configuration.
+# Copy this file to config.yaml and edit it, then mount it into the container.
+
+# --- Optional globals (defaults shown) ---
+port: 8080                   # web UI listen port (env PORT overrides this)
+broadcast: 255.255.255.255   # default broadcast target for magic packets
+wol_port: 9                  # standard Wake-on-LAN UDP port (7 is also common)
+
+# --- Machines to wake ---
+hosts:
+  - name: Desktop
+    mac: AA:BB:CC:DD:EE:FF
+
+  - name: Media PC
+    mac: "11:22:33:44:55:66"
+    # broadcast: 192.168.1.255   # optional: override the broadcast for this host
